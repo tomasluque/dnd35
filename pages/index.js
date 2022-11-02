@@ -1,13 +1,19 @@
 import { getAll, getSpell } from "../lib/firebase";
 
-export async function getServerSideProps() {
-    const all = await getAll();
-    return { props: { all } };
-}
+import Loader from "../components/Loader";
+
+// export async function getServerSideProps() {
+//     const all = await getAll();
+//     return { props: { all } };
+// }
 
 export default function Home(data) {
-    console.log(data.all);
-    return <div className="text-2xl">This is a test YO</div>;
+    return (
+        <div>
+            <div className="text-2xl">This is a test YO</div>
+            <Loader show />
+        </div>
+    );
 }
 
 /*** TO DO */
