@@ -11,7 +11,6 @@ export default function Home(data) {
     return (
         <div>
             <div className="text-2xl">This is a test YO</div>
-            <Loader show />
         </div>
     );
 }
