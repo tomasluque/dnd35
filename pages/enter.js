@@ -1,8 +1,11 @@
-import { auth, googleAuthProvider } from "../lib/firebase";
+import { auth, firestore, googleAuthProvider } from "../lib/firebase";
+import { UserContext } from "../lib/context";
+
+import { useEffect, useState, useCallback, useContext } from "react";
+import debounce from "lodash.debounce";
 
 export default function Enter(props) {
-    const user = null;
-    const username = null;
+    const { user, username } = useContext(UserContext);
 
     // 1. user signed out <SignInButton />
     // 2. user signed in, but missing username <UsernameForm />
@@ -29,17 +32,146 @@ function SignInButton() {
     };
 
     return (
-        <button className="btn-google" onClick={signInWithGoogle}>
-            <img src={"/google.png"} /> Sign in with Google
+        <button
+            className="mt-2 mr-4 mb-2 flex cursor-pointer items-center justify-center rounded bg-white px-8 py-4 text-center font-bold text-neutral-800 no-underline hover:brightness-75"
+            onClick={signInWithGoogle}
+        >
+            <img className="mr-2.5 w-8" src={"/google.png"} /> Sign in with
+            Google
         </button>
     );
 }
 
 // Sign out button
 function SignOutButton() {
-    return <button onClick={() => auth.signOut()}>Sign Out</button>;
+    return (
+        <button
+            className="mt-2 mr-4 mb-2 flex cursor-pointer items-center justify-center rounded bg-white px-8 py-4 text-center font-bold text-neutral-800 no-underline hover:brightness-75"
+            onClick={() => auth.signOut()}
+        >
+            Sign Out
+        </button>
+    );
 }
 
+// Username form
 function UsernameForm() {
-    return <p>yes</p>;
+    const [formValue, setFormValue] = useState("");
+    const [isValid, setIsValid] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const { user, username } = useContext(UserContext);
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+
+        // Create refs for both documents
+        const userDoc = firestore.doc(`users/${user.uid}`);
+        const usernameDoc = firestore.doc(`usernames/${formValue}`);
+
+        // Commit both docs together as a batch write.
+        const batch = firestore.batch();
+        batch.set(userDoc, {
+            username: formValue,
+            photoURL: user.photoURL,
+            displayName: user.displayName,
+        });
+        batch.set(usernameDoc, { uid: user.uid });
+
+        await batch.commit();
+    };
+
+    const onChange = (e) => {
+        // Force form value typed in form to match correct format
+        const val = e.target.value.toLowerCase();
+        const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
+
+        // Only set form value if length is < 3 OR it passes regex
+        if (val.length < 3) {
+            setFormValue(val);
+            setLoading(false);
+            setIsValid(false);
+        }
+
+        if (re.test(val)) {
+            setFormValue(val);
+            setLoading(true);
+            setIsValid(false);
+        }
+    };
+
+    //
+
+    useEffect(() => {
+        checkUsername(formValue);
+    }, [formValue]);
+
+    // Hit the database for username match after each debounced change
+    // useCallback is required for debounce to work
+    const checkUsername = useCallback(
+        debounce(async (username) => {
+            if (username.length >= 3) {
+                const ref = firestore.doc(`usernames/${username}`);
+                const { exists } = await ref.get();
+                console.log("Firestore read executed!");
+                setIsValid(!exists);
+                setLoading(false);
+            }
+        }, 500),
+        []
+    );
+
+    return (
+        !username && (
+            <section>
+                <h3 className="text-xl">Choose Username</h3>
+                <form onSubmit={onSubmit}>
+                    <input
+                        name="username"
+                        placeholder="myname"
+                        value={formValue}
+                        onChange={onChange}
+                        className="inline-block w-full py-1.5 px-3 text-2xl outline-0"
+                    />
+                    <UsernameMessage
+                        username={formValue}
+                        isValid={isValid}
+                        loading={loading}
+                    />
+                    <button
+                        type="submit"
+                        className="mt-2 mr-4 mb-2 flex cursor-pointer items-center justify-center rounded bg-green-800 px-4 py-2 text-center font-bold text-white no-underline hover:brightness-75"
+                        disabled={!isValid}
+                    >
+                        Choose
+                    </button>
+
+                    <h3 className="text-xl">Debug State</h3>
+                    <div>
+                        Username: {formValue}
+                        <br />
+                        Loading: {loading.toString()}
+                        <br />
+                        Username Valid: {isValid.toString()}
+                    </div>
+                </form>
+            </section>
+        )
+    );
+}
+
+function UsernameMessage({ username, isValid, loading }) {
+    if (loading) {
+        return <p>Checking...</p>;
+    } else if (isValid) {
+        return (
+            <p className="font-bold text-green-600">{username} is available!</p>
+        );
+    } else if (username && !isValid) {
+        return (
+            <p className="font-bold text-red-600">That username is taken!</p>
+        );
+    } else {
+        return <p></p>;
+    }
 }

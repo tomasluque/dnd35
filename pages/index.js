@@ -1,5 +1,5 @@
 import { getAll, getSpell } from "../lib/firebase";
-
+import toast from "react-hot-toast";
 import Loader from "../components/Loader";
 
 // export async function getServerSideProps() {
@@ -10,7 +10,9 @@ import Loader from "../components/Loader";
 export default function Home(data) {
     return (
         <div>
-            <div className="text-2xl">This is a test YO</div>
+            <button onClick={() => toast.success("hello toast!")}>
+                Toast Me
+            </button>
         </div>
     );
 }
