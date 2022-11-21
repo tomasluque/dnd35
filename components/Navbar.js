@@ -22,7 +22,10 @@ export default function Navbar() {
                     <>
                         <li className="ml-auto rounded-full">
                             <Link href="/admin">
-                                <button className="mt-2 mr-4 mb-2 flex cursor-pointer items-center justify-center rounded bg-blue-800 px-4 py-2 text-center font-bold text-white no-underline hover:brightness-75">
+                                <button
+                                    disabled
+                                    className="mt-2 mr-4 mb-2 flex cursor-pointer items-center justify-center rounded bg-blue-800 px-4 py-2 text-center font-bold text-white no-underline hover:brightness-75 disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:hover:brightness-100"
+                                >
                                     Write Posts
                                 </button>
                             </Link>
