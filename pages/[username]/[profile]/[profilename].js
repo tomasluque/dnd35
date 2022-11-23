@@ -20,11 +20,8 @@ export default function ProfileName({ profile, pid }) {
     console.log(profile.spells);
     return (
         <main>
-            <div>Name: {pid}</div>
+            {/* <div>Name: {pid}</div>
             <div>Class: {profile.class}</div>
-            {/* {profile.spells.forEach((e) => {
-                return <div>e</div>;
-            })} */}
             <div>
                 Sorts Connus par Jour:
                 <div className="ml-5">
@@ -36,7 +33,36 @@ export default function ProfileName({ profile, pid }) {
                         );
                     })}
                 </div>
-            </div>
+            </div> */}
+            <form>
+                name:
+                <input
+                    name="name"
+                    value={pid}
+                    className="m-3 inline-block w-full py-1.5 px-3 text-2xl outline-0"
+                />
+                class:
+                <input
+                    name="class"
+                    value={profile.class}
+                    className="m-3 inline-block w-full py-1.5 px-3 text-2xl outline-0"
+                />
+                Sorts Connus par Jour:
+                <div className="ml-5">
+                    {Object.keys(profile.spells).map((key) => {
+                        return (
+                            <div key={key}>
+                                lvl. {key}:
+                                <input
+                                    name={`lvl-${key}`}
+                                    value={profile.spells[key]}
+                                    className="m-3 inline-block w-full py-1.5 px-3 text-2xl outline-0"
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
+            </form>
         </main>
     );
 }
