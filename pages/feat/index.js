@@ -11,15 +11,13 @@ export async function getServerSideProps() {
 function renderFeatList(feats) {
     return feats.map((feat) => (
         <Link
+            key={feat.id}
             href={{
                 pathname: "/feat/[id]",
                 query: { id: feat.id },
             }}
         >
-            <div
-                className="flex flex-col rounded border-2 border-slate-300 p-3 text-slate-800 shadow-lg hover:bg-sky-100"
-                key={feat.id}
-            >
+            <div className="flex flex-col rounded border-2 border-slate-300 p-3 text-slate-800 shadow-lg hover:bg-sky-100">
                 <div className="font-bold text-slate-600 underline">
                     {feat.name}
                 </div>

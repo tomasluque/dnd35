@@ -20,6 +20,7 @@ function loopLevel(array) {
 function renderSpellList(spells, level = "all", available = "all") {
     return spells.map((spell) => (
         <Link
+            key={spell.id}
             href={{
                 pathname: "/spell/[id]",
                 query: { id: spell.id },
