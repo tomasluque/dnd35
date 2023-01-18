@@ -13,11 +13,13 @@ body {
     padding: 0;
     margin: 0;
     font-family: "Noto Sans", sans-serif;
-    background-color: #e5e5e5;
-    color: #18181b;
-    margin-top: 50px;
 }
+/* 
+body,
+body > div {
+    min-height: 100vh;
+} */
 
-main {
-    padding: 1rem 10vw;
-}
+/* main {
+    padding: 1rem;
+} */

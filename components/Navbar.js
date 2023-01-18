@@ -1,56 +1,84 @@
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment } from "react";
+import { Bars4Icon } from "@heroicons/react/20/solid";
 import Link from "next/link";
-import { useContext } from "react";
-import { UserContext } from "../lib/context";
 
-// Top navbar
 export default function Navbar() {
-    const { user, username } = useContext(UserContext);
-
     return (
-        <nav className="fixed top-0 z-50 h-16 w-full border-b border-b-zinc-400 bg-white px-[10vw] font-bold text-zinc-900">
-            <ul className="m-0 flex h-full items-center justify-between p-0">
-                <li className="rounded-full">
-                    <Link href="/">
-                        <button className="mt-2 mr-4 mb-2 flex cursor-pointer items-center justify-center rounded bg-neutral-900 px-4 py-2 text-center text-2xl font-bold uppercase text-white no-underline hover:brightness-75">
-                            FEED
-                        </button>
-                    </Link>
-                </li>
-
-                {/* user is signed-in and has username */}
-                {username && (
-                    <>
-                        <li className="ml-auto rounded-full">
-                            <Link href="/admin">
-                                <button
-                                    disabled
-                                    className="mt-2 mr-4 mb-2 flex cursor-pointer items-center justify-center rounded bg-blue-800 px-4 py-2 text-center font-bold text-white no-underline hover:brightness-75 disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:hover:brightness-100"
-                                >
-                                    Write Posts
-                                </button>
-                            </Link>
-                        </li>
-                        <li className="rounded-full">
-                            <Link href={`/${username}`}>
-                                <img
-                                    className="h-12 w-12 cursor-pointer rounded-full"
-                                    src={user?.photoURL}
-                                />
-                            </Link>
-                        </li>
-                    </>
-                )}
-                {/* user is not signed OR has not created username */}
-                {!username && (
-                    <li className="rounded-full">
-                        <Link href="/enter">
-                            <button className="mt-2 mr-4 mb-2 flex cursor-pointer items-center justify-center rounded bg-blue-800 px-4 py-2 text-center font-bold text-white no-underline hover:brightness-75">
-                                Log in
-                            </button>
-                        </Link>
-                    </li>
-                )}
-            </ul>
-        </nav>
+        <div className="fixed bottom-8 right-8 w-56 text-right">
+            <Menu as="div" className="relative inline-block text-left">
+                <div>
+                    <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                        <Bars4Icon
+                            className="-mx-1 h-5 w-5 text-slate-200 hover:text-slate-100"
+                            aria-hidden="true"
+                        />
+                    </Menu.Button>
+                </div>
+                <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                >
+                    <Menu.Items className="absolute right-0 bottom-12 mt-2 w-56 origin-bottom-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="px-1 py-1 ">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <Link href="/">
+                                        <button
+                                            className={`${
+                                                active
+                                                    ? "bg-sky-500 text-white"
+                                                    : "text-slate-900"
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                        >
+                                            Home
+                                        </button>
+                                    </Link>
+                                )}
+                            </Menu.Item>
+                        </div>
+                        <div className="px-1 py-1">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <Link href="/spell">
+                                        <button
+                                            className={`${
+                                                active
+                                                    ? "bg-sky-500 text-white"
+                                                    : "text-slate-900"
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                        >
+                                            Sorts
+                                        </button>
+                                    </Link>
+                                )}
+                            </Menu.Item>
+                        </div>
+                        <div className="px-1 py-1">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <Link href="/feat">
+                                        <button
+                                            className={`${
+                                                active
+                                                    ? "bg-sky-500 text-white"
+                                                    : "text-slate-900"
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                        >
+                                            Dons
+                                        </button>
+                                    </Link>
+                                )}
+                            </Menu.Item>
+                        </div>
+                    </Menu.Items>
+                </Transition>
+            </Menu>
+        </div>
     );
 }

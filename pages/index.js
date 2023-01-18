@@ -1,21 +1,20 @@
-import { getAll, getSpell } from "../lib/firebase";
 import toast from "react-hot-toast";
-import Loader from "../components/Loader";
+import Loader from "@components/Loader";
+import Link from "next/link";
 
-// export async function getServerSideProps() {
-//     const all = await getAll();
-//     return { props: { all } };
-// }
-
-export default function Home(data) {
+export default function Home() {
     return (
-        <div>
-            <button onClick={() => toast.success("hello toast!")}>
-                Toast Me
-            </button>
-        </div>
+        <main className="">
+            <div>
+                <button onClick={() => toast.success("hello toast!")}>
+                    Toast Me
+                </button>
+            </div>
+        </main>
     );
 }
+
+// Sky & Amber & Slate
 
 /*** TO DO */
 /*** v1.0 */
